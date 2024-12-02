@@ -79,14 +79,27 @@ public class SolucioBacktracking {
 		for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
 			if (acceptable(indexUbicacio, indexItem)){
 				anotarASolucio(indexUbicacio, indexItem);
+				markatge[indexItem] = true;
 				if (esSolucio(indexUbicacio)){
 					guardarMillorSolucio();
 				} else {
 					backMillorSolucio(indexUbicacio+1);
+					desanotarDeSolucio(indexUbicacio, indexItem);
 				}
-				desanotarDeSolucio(indexUbicacio, indexItem);
 			}
 		}
+
+		//if (indexUbicacio == this.repte.getEspaisDisponibles().size()) {
+//            guardarMillorSolucio();
+//            return;
+//        }
+//        for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
+//            if (acceptable(indexUbicacio, indexItem)) {
+//                anotarASolucio(indexUbicacio, indexItem);
+//                markatge[indexItem] = true;
+//                backMillorSolucio(indexUbicacio + 1);
+//            }
+//        }
 	}
 
 	private boolean acceptable(int indexUbicacio, int indexItem) {
@@ -128,16 +141,6 @@ public class SolucioBacktracking {
 
 	private void anotarASolucio(int indexUbicacio, int indexItem) {
 		//TODO: Cris
-//		PosicioInicial posicio = this.repte.getEspaisDisponibles().get(indexUbicacio);
-//		int itemL = this.repte.getItem(indexItem).length;
-//		solucio[posicio.getInitRow()][posicio.getInitCol()] = this.repte.getItem(indexItem)[0];
-//		for(int i = 0; i < itemL; i++) {
-//			if(posicio.getDireccio() == 'H') {
-//				solucio[posicio.getInitRow()][posicio.getInitCol()+i] = this.repte.getItem(indexItem)[i];
-//			} else {
-//				solucio[i][posicio.getInitCol()] = this.repte.getItem(indexItem)[i];
-//			}
-//		}
 		char[] item = this.repte.getItem(indexItem);
 		PosicioInicial posicio = this.repte.getEspaisDisponibles().get(indexUbicacio);
 		// item i posicio mateixa longitud
@@ -156,22 +159,17 @@ public class SolucioBacktracking {
 	private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
 		//TODO: Cris
 		PosicioInicial posicio = this.repte.getEspaisDisponibles().get(indexUbicacio);
-		int l;
 		if(posicio.getDireccio() == 'H') {
-			l = posicio.getInitCol();
 			for(int i = 0; i < posicio.getLength(); i++) {
-				if (esPotEliminar(posicio.getInitRow(), l, 'H')) {
-					solucio[posicio.getInitRow()][l] = ' ';
+				if (esPotEliminar(posicio.getInitRow(), posicio.getInitCol() + i, 'H')) {
+					solucio[posicio.getInitRow()][posicio.getInitCol() + i] = ' ';
 				}
-				l++;
 			}
 		} else {
-			l = posicio.getInitRow();
 			for(int i = 0; i < posicio.getLength(); i++) {
-				if (esPotEliminar(l, posicio.getInitCol(), 'V')) {
-					solucio[l][posicio.getInitCol()] = ' ';
+				if (esPotEliminar(posicio.getInitRow() + i, posicio.getInitCol(), 'V')) {
+					solucio[posicio.getInitRow() + i][posicio.getInitCol()] = ' ';
 				}
-				l++;
 			}
 		}
 		markatge[indexItem] = false;
@@ -192,7 +190,7 @@ public class SolucioBacktracking {
 		return index+1 == this.repte.getEspaisDisponibles().size(); // TODO: Cris
 	}
 
-	//
+
 	private int calcularFuncioObjectiu(char[][] matriu) { // TODO: Cris
 		int valor = 0;
 		for(int i = 0; i < matriu.length; i++) {
