@@ -13,13 +13,13 @@ public class SolucioBacktracking {
 	private boolean[] markatge;
 	private int numMillorSol = -1;
 
-	
+
 	public SolucioBacktracking(Encreuades repte) {
 		this.repte = repte;
 	}
 
 	public char[][] getMillorSolucio() {
-		return solucio; //TODO: Cris
+		return solucioMillor; //TODO: Cris
 	}
 
 	public Runnable start(boolean optim)
@@ -77,29 +77,19 @@ public class SolucioBacktracking {
 	private void backMillorSolucio(int indexUbicacio) {
 		//posible solucion
 		for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
-			if (acceptable(indexUbicacio, indexItem)){
+			if (acceptable(indexUbicacio, indexItem)) {
 				anotarASolucio(indexUbicacio, indexItem);
 				markatge[indexItem] = true;
-				if (esSolucio(indexUbicacio)){
+				if (esSolucio(indexUbicacio)) {
 					guardarMillorSolucio();
 				} else {
-					backMillorSolucio(indexUbicacio+1);
-					desanotarDeSolucio(indexUbicacio, indexItem);
+					backMillorSolucio(indexUbicacio + 1);
 				}
+				desanotarDeSolucio(indexUbicacio, indexItem);
+				markatge[indexItem] = false;
 			}
 		}
 
-		//if (indexUbicacio == this.repte.getEspaisDisponibles().size()) {
-//            guardarMillorSolucio();
-//            return;
-//        }
-//        for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
-//            if (acceptable(indexUbicacio, indexItem)) {
-//                anotarASolucio(indexUbicacio, indexItem);
-//                markatge[indexItem] = true;
-//                backMillorSolucio(indexUbicacio + 1);
-//            }
-//        }
 	}
 
 	private boolean acceptable(int indexUbicacio, int indexItem) {
@@ -127,16 +117,6 @@ public class SolucioBacktracking {
 			}
 		}
 		return true;
-
-//		char[] item = this.repte.getItem(indexItem);
-//		PosicioInicial posicio = this.repte.getEspaisDisponibles().get(indexUbicacio);
-//
-//		// TODO item i posicio mateixa longitud
-//		if (item.length != posicio.getLength()) return false;
-//		// todo marcatge per no repetir la paraula
-//		if (markatge[indexItem]) return false;
-//		return true;
-
 	}
 
 	private void anotarASolucio(int indexUbicacio, int indexItem) {
@@ -144,12 +124,10 @@ public class SolucioBacktracking {
 		char[] item = this.repte.getItem(indexItem);
 		PosicioInicial posicio = this.repte.getEspaisDisponibles().get(indexUbicacio);
 		// item i posicio mateixa longitud
-		if (posicio.getDireccio() == 'H') {
-			for (int i = 0; i < item.length; i++) {
+		for (int i = 0; i < item.length; i++) {
+			if (posicio.getDireccio() == 'H') {
 				solucio[posicio.getInitRow()][posicio.getInitCol() + i] = item[i];
-			}
-		} else {
-			for (int i = 0; i < item.length; i++) {
+			} else {
 				solucio[posicio.getInitRow() + i][posicio.getInitCol()] = item[i];
 			}
 		}
@@ -159,14 +137,13 @@ public class SolucioBacktracking {
 	private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
 		//TODO: Cris
 		PosicioInicial posicio = this.repte.getEspaisDisponibles().get(indexUbicacio);
-		if(posicio.getDireccio() == 'H') {
-			for(int i = 0; i < posicio.getLength(); i++) {
+
+		for(int i = 0; i < posicio.getLength(); i++) {
+			if(posicio.getDireccio() == 'H') {
 				if (esPotEliminar(posicio.getInitRow(), posicio.getInitCol() + i, 'H')) {
 					solucio[posicio.getInitRow()][posicio.getInitCol() + i] = ' ';
 				}
-			}
-		} else {
-			for(int i = 0; i < posicio.getLength(); i++) {
+			} else {
 				if (esPotEliminar(posicio.getInitRow() + i, posicio.getInitCol(), 'V')) {
 					solucio[posicio.getInitRow() + i][posicio.getInitCol()] = ' ';
 				}
@@ -176,16 +153,20 @@ public class SolucioBacktracking {
 	}
 
 	private boolean esPotEliminar(int x, int y, char direccio) {
-		if(direccio == 'H') {
-			return  (x > 0 && ('▪' == this.solucio[x-1][y] || ' ' == this.solucio[x-1][y])) ||
-					(x < this.solucio.length-1 && ('▪' == this.solucio[x+1][y] || ' ' == this.solucio[x+1][y]));
-		} else {
-			return (y > 0 && ('▪' == this.solucio[x][y-1] || ' ' == this.solucio[x][y-1])) ||
-					(y < this.solucio.length-1 && ('▪' == this.solucio[x][y+1] || ' ' == this.solucio[x][y+1]));
+		try {
+			if(direccio == 'H') {
+				return  (('▪' == this.solucio[x-1][y] || ' ' == this.solucio[x-1][y])) &&
+						(( '▪' == this.solucio[x+1][y] || ' ' == this.solucio[x+1][y]));
+			} else {
+				return (('▪' == this.solucio[x][y-1] || ' ' == this.solucio[x][y-1])) &&
+						(('▪' == this.solucio[x][y+1] || ' ' == this.solucio[x][y+1]));
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return true;
 		}
 	}
 
-	
+
 	private boolean esSolucio(int index) {
 		return index+1 == this.repte.getEspaisDisponibles().size(); // TODO: Cris
 	}
@@ -195,12 +176,12 @@ public class SolucioBacktracking {
 		int valor = 0;
 		for(int i = 0; i < matriu.length; i++) {
 			for(int j = 0; j < matriu[i].length; j++) {
-				if(matriu[i][j] != '▪') valor += matriu[i][j];
+				if(matriu[i][j] != '▪' && matriu[i][j] != ' ') valor += matriu[i][j];
 			}
 		}
 		return valor;
 	}
-	
+
 	private void guardarMillorSolucio() {
 		// TODO - cal guardar un clone - Cris
 		int puntuacioActual = calcularFuncioObjectiu(this.solucio);
@@ -214,16 +195,16 @@ public class SolucioBacktracking {
 			numMillorSol = puntuacioActual;
 		}
 	}
-	
+
 	public String toString() {
 		StringBuilder resultat = new StringBuilder();
 		//TODO: Cris
-        for (char[] chars : solucio) {
-            for (char aChar : chars) {
-                resultat.append(aChar).append(" ");
-            }
-            resultat.append("\n");
-        }
+		for (char[] chars : solucio) {
+			for (char aChar : chars) {
+				resultat.append(aChar).append(" ");
+			}
+			resultat.append("\n");
+		}
 		return resultat.toString();
 	}
 
