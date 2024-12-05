@@ -4,9 +4,6 @@ import estructura.PosicioInicial;
 
 public class SolucioBacktracking {
 
-	/* TODO
-	 * cal definir els atributs necessaris
-	 */
 	private char[][] solucio;
 	private char[][] solucioMillor;
 	private final Encreuades repte;
@@ -19,14 +16,11 @@ public class SolucioBacktracking {
 	}
 
 	public char[][] getMillorSolucio() {
-		return solucioMillor; //TODO: Cris
+		return solucioMillor;
 	}
 
 	public Runnable start(boolean optim)
 	{
-		/* TODO
-		 * cal inicialitzar els atributs necessaris
-		 */
 		markatge = new boolean[this.repte.getItemsSize()];
 		for (int i = 0; i < this.repte.getItemsSize(); i++) {
 			markatge[i] = false;
@@ -69,7 +63,7 @@ public class SolucioBacktracking {
 		}
 		return trobada;
 	}
-	/* TODO: Victor
+	/*
 	 * Esquema recursiu que busca totes les solucions
 	 * no cal utilitzar una variable booleana per aturar perquè busquem totes les solucions
 	 * cal guardar una COPIA de la millor solució a una variable
@@ -120,7 +114,6 @@ public class SolucioBacktracking {
 	}
 
 	private void anotarASolucio(int indexUbicacio, int indexItem) {
-		//TODO: Cris
 		char[] item = this.repte.getItem(indexItem);
 		PosicioInicial posicio = this.repte.getEspaisDisponibles().get(indexUbicacio);
 		// item i posicio mateixa longitud
@@ -135,7 +128,6 @@ public class SolucioBacktracking {
 	}
 
 	private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
-		//TODO: Cris
 		PosicioInicial posicio = this.repte.getEspaisDisponibles().get(indexUbicacio);
 
 		for(int i = 0; i < posicio.getLength(); i++) {
@@ -154,25 +146,25 @@ public class SolucioBacktracking {
 
 	private boolean esPotEliminar(int x, int y, char direccio) {
 		try {
-			if(direccio == 'H') {
-				return  (('▪' == this.solucio[x-1][y] || ' ' == this.solucio[x-1][y])) &&
-						(( '▪' == this.solucio[x+1][y] || ' ' == this.solucio[x+1][y]));
+			if (direccio == 'H') {
+				return  ((x - 1 < 0 || this.solucio[x - 1][y] == '▪' || this.solucio[x - 1][y] == ' ') &&
+						(x + 1 >= this.solucio.length || this.solucio[x + 1][y] == '▪' || this.solucio[x + 1][y] == ' '));
 			} else {
-				return (('▪' == this.solucio[x][y-1] || ' ' == this.solucio[x][y-1])) &&
-						(('▪' == this.solucio[x][y+1] || ' ' == this.solucio[x][y+1]));
+				return ((y - 1 < 0 || this.solucio[x][y - 1] == '▪' || this.solucio[x][y - 1] == ' ') &&
+						(y + 1 >= this.solucio[0].length || this.solucio[x][y + 1] == '▪' || this.solucio[x][y + 1] == ' '));
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
-			return true;
+			return false;
 		}
 	}
 
 
 	private boolean esSolucio(int index) {
-		return index+1 == this.repte.getEspaisDisponibles().size(); // TODO: Cris
+		return index+1 == this.repte.getEspaisDisponibles().size();
 	}
 
 
-	private int calcularFuncioObjectiu(char[][] matriu) { // TODO: Cris
+	private int calcularFuncioObjectiu(char[][] matriu) {
 		int valor = 0;
 		for(int i = 0; i < matriu.length; i++) {
 			for(int j = 0; j < matriu[i].length; j++) {
@@ -183,7 +175,6 @@ public class SolucioBacktracking {
 	}
 
 	private void guardarMillorSolucio() {
-		// TODO - cal guardar un clone - Cris
 		int puntuacioActual = calcularFuncioObjectiu(this.solucio);
 
 		if (puntuacioActual > numMillorSol){
@@ -198,7 +189,6 @@ public class SolucioBacktracking {
 
 	public String toString() {
 		StringBuilder resultat = new StringBuilder();
-		//TODO: Cris
 		for (char[] chars : solucio) {
 			for (char aChar : chars) {
 				resultat.append(aChar).append(" ");

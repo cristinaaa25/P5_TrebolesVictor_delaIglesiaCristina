@@ -8,9 +8,11 @@ public class SolucióVoraç {
      * cal definir els atributs necessaris
      */
     private final Encreuades repte;
+    public char[][] solucio;
 
     public SolucióVoraç(Encreuades repte) {
         this.repte = repte;
+        this.solucio = this.repte.getPuzzle();
         /* TODO
          * cal inicialitzar els atributs necessaris
          * i invocar al mètode greedy
