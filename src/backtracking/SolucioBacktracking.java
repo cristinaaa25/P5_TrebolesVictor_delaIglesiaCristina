@@ -48,7 +48,7 @@ public class SolucioBacktracking {
 		// iterem sobre els possibles elements
 		for(int indexItem = 0; indexItem < this.repte.getItemsSize() && !trobada; indexItem++) {
 			//mirem si l'element es pot posar a la ubicació actual
-			if(acceptable( indexUbicacio, indexItem)) {
+			if(acceptable(indexUbicacio, indexItem)) {
 				//posem l'element a la solució actual
 				anotarASolucio(indexUbicacio, indexItem);
 
@@ -69,18 +69,15 @@ public class SolucioBacktracking {
 	 * cal guardar una COPIA de la millor solució a una variable
 	 */
 	private void backMillorSolucio(int indexUbicacio) {
-		//posible solucion
 		for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
 			if (acceptable(indexUbicacio, indexItem)) {
 				anotarASolucio(indexUbicacio, indexItem);
-				markatge[indexItem] = true;
 				if (esSolucio(indexUbicacio)) {
 					guardarMillorSolucio();
 				} else {
 					backMillorSolucio(indexUbicacio + 1);
 				}
 				desanotarDeSolucio(indexUbicacio, indexItem);
-				markatge[indexItem] = false;
 			}
 		}
 
@@ -120,11 +117,12 @@ public class SolucioBacktracking {
 		for (int i = 0; i < item.length; i++) {
 			if (posicio.getDireccio() == 'H') {
 				solucio[posicio.getInitRow()][posicio.getInitCol() + i] = item[i];
+				markatge[indexItem] = true;
 			} else {
 				solucio[posicio.getInitRow() + i][posicio.getInitCol()] = item[i];
+				markatge[indexItem] = true;
 			}
 		}
-		markatge[indexItem] = true;
 	}
 
 	private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
@@ -134,14 +132,15 @@ public class SolucioBacktracking {
 			if(posicio.getDireccio() == 'H') {
 				if (esPotEliminar(posicio.getInitRow(), posicio.getInitCol() + i, 'H')) {
 					solucio[posicio.getInitRow()][posicio.getInitCol() + i] = ' ';
+					markatge[indexItem] = false;
 				}
 			} else {
 				if (esPotEliminar(posicio.getInitRow() + i, posicio.getInitCol(), 'V')) {
 					solucio[posicio.getInitRow() + i][posicio.getInitCol()] = ' ';
+					markatge[indexItem] = false;
 				}
 			}
 		}
-		markatge[indexItem] = false;
 	}
 
 	private boolean esPotEliminar(int x, int y, char direccio) {
